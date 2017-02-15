@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>URL Shortener</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+<body>
+
+<h1>Shortened URL list:</h1>
+{% if urls|length > 0 %}
+    <div class="table-responsive" style="max-height: 380px">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Long URL</th>
+                <th>Short URL</th>
+                <th>Author</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for url in urls %}
+                <tr>
+                    <td><a href="{{ url.long_url }}" target="_blank">{{ url.long_url }}</a></td>
+                    <td><a href="{{ url.short_url }}" target="_blank">{{ url.short_url }}</a></td>
+                    <td>{{ url.username }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    Empty list.
+{% endif %}
+<h1>Shorten your URL:</h1>
+<div class="row">
+    <form action="/shorten" method="post" class="form-inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group" style="margin-left: 0.5%;">
+            <label for="longurlfield" class="col-sm-2 control-label">URL</label>
+            <div class="col-sm-9">
+                {{ form.long_url(size=60, id="longurlfield", placeholder="Insert the URL to shortenify") }}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form.submit(class="btn btn-default") }}
+            </div>
+        </div>
+    </form>
+</div>
+<br>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+{% if messages %}
+    <div class="row">
+        {% for category, message in messages %}
+            {% for key in message.keys() %}
+                {% if category == 'error' %}
+                    <div class="alert alert-warning col-xs-10 col-md-10 col-xs-offset-1 col-md-offset-1">
+                        <strong>Warning!</strong> {{ message[key][0] }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success col-xs-10 col-md-10 col-xs-offset-1 col-md-offset-1">
+                        <strong>{{ message[key] }}</strong>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+<a href="/logout" style="position: absolute; top: 1%; right: 1%;">Logout</a>
+</body>
+</html>
