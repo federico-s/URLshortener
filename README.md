@@ -7,4 +7,4 @@ Technologies used:
   - HTML, CSS
   - sqlite
   
-  Feel free to contribute.
+Feel free to contribute.
